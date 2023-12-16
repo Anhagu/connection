@@ -26,7 +26,7 @@ const Main = () => {
         const bodyData = {
             ...requestData,
             solYear: nowDate.getFullYear(),
-            solMonth: nowDate.getMonth() + 1,
+            solMonth: (nowDate.getMonth() + 1).toString().padStart(2, '0'),
         };
 
         const response = await axios.get(

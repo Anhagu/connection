@@ -61,7 +61,6 @@ const DateBox = ({
     holiday,
 }: Props) => {
     const allDay: Date[] = monthList(nowDate);
-
     const weeks = ["일", "월", "화", "수", "목", "금", "토"];
 
     const holidayLocDate = holiday.map((data:Holiday) => {
@@ -87,6 +86,7 @@ const DateBox = ({
                         clickedDate={clickedDate}
                         setClickedDate={setClickedDate}
                         isHoliday={isHoliday}
+                        holiday={holiday}
                     />
                 );
             })}

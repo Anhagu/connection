@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { Holiday } from '../types/type';
 
 interface ContainerProps {
     sameMonth: boolean;
@@ -54,6 +55,7 @@ interface Props {
     clickedDate: Date | undefined;
     setClickedDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
     isHoliday: boolean;
+    holiday: Holiday[];
 }
 
 const AllDay = ({
@@ -63,6 +65,7 @@ const AllDay = ({
     clickedDate,
     setClickedDate,
     isHoliday,
+    holiday,
 }: Props) => {
     const nowTime = new Date();
 
@@ -82,6 +85,20 @@ const AllDay = ({
         setClickedDate(day);
     };
 
+    const holidayLocDate = holiday.map((data:Holiday) => {
+        return String(data?.locdate);
+    })
+
+    // 현재 날짜가 공휴일인지 확인
+    const isCurrentDateHoliday = holidayLocDate.includes(
+        `${day.getFullYear()}${('0' + (day.getMonth() + 1)).slice(-2)}${('0' + day.getDate()).slice(-2)}`
+    );
+
+    // 현재 날짜의 공휴일 이름 찾기
+    const holidayInfo = holiday.find(
+        (data: Holiday) => String(data?.locdate) === `${day.getFullYear()}${('0' + (day.getMonth() + 1)).slice(-2)}${('0' + day.getDate()).slice(-2)}`
+    );
+
     return (
         <Container
             onClick={clickDate}
@@ -90,7 +107,7 @@ const AllDay = ({
             clickDay={clickDay}
             isHoliday={isHoliday}
         >
-            <p>{day.getDate()}</p>
+            <p>{day.getDate()}{isCurrentDateHoliday && ` ${holidayInfo?.dateName}`}</p>
         </Container>
     )
 }
