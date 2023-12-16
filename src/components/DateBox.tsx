@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import WeekBox from './WeekBox';
 import AllDay from './AllDay';
+import { Holiday } from '../types/type';
 
 const Container = styled.div`
     display: grid;
@@ -41,26 +42,51 @@ interface Props {
     setNowDate: React.Dispatch<React.SetStateAction<Date>>;
     clickedDate: Date | undefined;
     setClickedDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+    holiday: Holiday[];
 }
 
-const DateBox = ({ nowDate, setNowDate, clickedDate, setClickedDate }: Props) => {
+const dateToyyyymmdd = (date:Date):string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth()+1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}${month}${day}`;
+}
+
+const DateBox = ({
+    nowDate,
+    setNowDate,
+    clickedDate,
+    setClickedDate,
+    holiday,
+}: Props) => {
     const allDay: Date[] = monthList(nowDate);
 
     const weeks = ["일", "월", "화", "수", "목", "금", "토"];
 
+    const holidayLocDate = holiday.map((data:Holiday) => {
+        return String(data?.locdate);
+    })
+
     return (
         <Container>
-            {weeks.map((week: string) => {
-                return <WeekBox weekName={week} />;
+            {weeks.map((week: string, idx: number) => {
+                return <WeekBox key={idx} weekName={week} />;
             })}
             {allDay.map((day: Date) => {
+                const yyyymmdd = dateToyyyymmdd(day);
+                const todayIsHoliday = holidayLocDate.indexOf(yyyymmdd);
+                const isHoliday = todayIsHoliday === -1 ? false : true;
+
                 return (
                     <AllDay
+                        key={yyyymmdd}
                         day={day}
                         nowDate={nowDate}
                         setNowDate={setNowDate}
                         clickedDate={clickedDate}
                         setClickedDate={setClickedDate}
+                        isHoliday={isHoliday}
                     />
                 );
             })}

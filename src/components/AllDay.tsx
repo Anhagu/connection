@@ -5,6 +5,7 @@ interface ContainerProps {
     sameMonth: boolean;
     sameDay: boolean;
     clickDay: boolean;
+    isHoliday: boolean;
 }
 
 const Container = styled.div<ContainerProps>`
@@ -27,14 +28,22 @@ const Container = styled.div<ContainerProps>`
                 color: white;
                 background-color: blue;
             `
-        : css``}
-
-        ${({ clickDay }) => 
-            clickDay 
-                ? css`
-                    border: 1px solid skyblue;
-                ` 
             : css``}
+
+        ${({ clickDay }) =>
+        clickDay
+            ? css`
+                    border: 1px solid skyblue;
+                `
+            : css``}
+        
+        ${({ isHoliday }) => {
+        if (isHoliday) {
+            return css`
+                    color: red;
+                `;
+        }
+    }}
     }
 `;
 
@@ -44,9 +53,17 @@ interface Props {
     setNowDate: React.Dispatch<React.SetStateAction<Date>>;
     clickedDate: Date | undefined;
     setClickedDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+    isHoliday: boolean;
 }
 
-const AllDay = ({ day, nowDate, setNowDate, clickedDate, setClickedDate }: Props) => {
+const AllDay = ({
+    day,
+    nowDate,
+    setNowDate,
+    clickedDate,
+    setClickedDate,
+    isHoliday,
+}: Props) => {
     const nowTime = new Date();
 
     const sameMonth = nowDate.getMonth() === day.getMonth();
@@ -66,7 +83,13 @@ const AllDay = ({ day, nowDate, setNowDate, clickedDate, setClickedDate }: Props
     };
 
     return (
-        <Container onClick={clickDate} sameMonth={sameMonth} sameDay={sameDay} clickDay={clickDay}>
+        <Container
+            onClick={clickDate}
+            sameMonth={sameMonth}
+            sameDay={sameDay}
+            clickDay={clickDay}
+            isHoliday={isHoliday}
+        >
             <p>{day.getDate()}</p>
         </Container>
     )
