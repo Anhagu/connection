@@ -16,6 +16,8 @@ const Main = () => {
     const [nowDate, setNowDate] = useState<Date>(new Date());
     const [clickedDate, setClickedDate] = useState<Date>();
     const [holiday, setHoliday] = useState<Holiday[]>([]);
+    // 공휴일 뷰 체크박스 State
+    const [checkHoliday, setCheckHoliday] = useState<boolean>(false);
 
     // API를 통해 공휴일 데이터를 가져오는 비동기 함수를 정의
     const getHoliday = async () => {
@@ -45,7 +47,7 @@ const Main = () => {
     return (
         <Container>
             {/* ControlDate(날짜 조절 컨트롤러) 컴포넌트 렌더링 */}
-            <ControlDate nowDate={nowDate} setNowDate={setNowDate} />
+            <ControlDate nowDate={nowDate} setNowDate={setNowDate} checkHoliday={checkHoliday} setCheckHoliday={setCheckHoliday} />
             
             {/* DateBox(달력) 컴포넌트 렌더링 */}
             <DateBox
@@ -54,6 +56,7 @@ const Main = () => {
                 clickedDate={clickedDate}
                 setClickedDate={setClickedDate}
                 holiday={holiday}
+                checkHoliday={checkHoliday}
             />
         </Container>
     );

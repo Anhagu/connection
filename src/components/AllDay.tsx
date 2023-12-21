@@ -8,6 +8,15 @@ interface ContainerProps {
     sameDay: boolean;
     clickDay: boolean;
     isHoliday: boolean;
+    checkHoliday: boolean;
+}
+
+interface DateContainerProp {
+    sameDay: boolean;
+}
+
+interface HolidayNameProp {
+    isHoliday: boolean;
 }
 
 // AllDay 컴포넌트에 전달되는 Props를 정의
@@ -19,10 +28,11 @@ interface Props {
     setClickedDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
     isHoliday: boolean;
     holiday: Holiday[];
+    checkHoliday: boolean;
 }
 
 // AllDay 컴포넌트 정의 (DateBox 컴포넌트에서 map함수에 의해 해당 달의 첫날부터 마지막 날까지 호출됨)
-const AllDay = ({ day, nowDate, setNowDate, clickedDate, setClickedDate, isHoliday, holiday }: Props) => {
+const AllDay = ({ day, nowDate, setNowDate, clickedDate, setClickedDate, isHoliday, holiday, checkHoliday }: Props) => {
     // 현재 시간
     const nowTime = new Date();
 
@@ -30,7 +40,7 @@ const AllDay = ({ day, nowDate, setNowDate, clickedDate, setClickedDate, isHolid
     const sameMonth = nowDate.getMonth() === day.getMonth();
 
     // 현재 날짜와 표시할 날짜가 동일한 날인지 여부를 확인 (오늘 날짜를 표시하기 위해)
-    const sameDay = 
+    const sameDay =
         nowTime.getFullYear() === day.getFullYear() &&
         nowTime.getMonth() === day.getMonth() &&
         nowTime.getDate() === day.getDate();
@@ -64,59 +74,123 @@ const AllDay = ({ day, nowDate, setNowDate, clickedDate, setClickedDate, isHolid
 
     return (
         <Container
-            onClick={clickDate}
-            sameMonth={sameMonth}
-            sameDay={sameDay}
-            clickDay={clickDay}
-            isHoliday={isHoliday}
+            onClick={clickDate} sameMonth={sameMonth} sameDay={sameDay}
+            clickDay={clickDay} isHoliday={isHoliday} checkHoliday={checkHoliday}
         >
-            <p>{day.getDate()}</p>
-            <p>일</p>
-            <p>{isCurrentDateHoliday && ` ${holidayInfo?.dateName}`}</p>
+            <DateHeader>
+                <DateContainer sameDay={sameDay}>
+                    <p>{day.getDate()}</p>
+                    <p>일</p>
+                </DateContainer>
+
+                <HolidayName isHoliday={isHoliday}>
+                    <p>{isCurrentDateHoliday && ` ${holidayInfo?.dateName}`}</p>
+                </HolidayName>
+            </DateHeader>
         </Container>
     )
 }
 
 const Container = styled.div<ContainerProps>`
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
     border: 1px solid gray;
 
-    &:hover {
-        background-color: gray;
-    }
-
+    // 해당 달과 이전&다음달 폰트 사이즈
     p {
-        padding: 5px;
-        font-weight: ${({ sameMonth }) => (sameMonth ? "700" : "300")};
-        
-        &:first-child {
-            ${({ sameDay }) =>
-                sameDay
-                    ? css`
-                        color: white;
-                        border-radius: 50%;
-                        background-color: #ff2e16;
-                    `
-                    : css``}
-        }
-
-        ${({ clickDay }) =>
-        clickDay
-            ? css`
-                    border: 1px solid skyblue;
-                `
-            : css``}
-        
-        ${({ isHoliday }) => {
-        if (isHoliday) {
-            return css`
-                    color: red;
-                `;
-        }
-    }}
+        font-weight: ${({ sameMonth }) => (sameMonth ? '700' : '300')};
     }
+
+    // 마우스 올려놨을때 배경색상 변경
+    &:hover {
+        background-color: ${({ sameMonth }) => (sameMonth ? 'gray' : 'initial')};
+    }
+
+    // 공휴일 보여줄지 여부
+    ${props => props.checkHoliday && `
+        ${HolidayName} {
+            display: none;
+        }
+    `}
+
+    // 클릭한 날짜 표시 스타일
+    ${props => props.clickDay && `
+        // 전체 p태그 스타일 적용
+        ${DateContainer} p:first-child,
+        ${DateContainer} p:last-child {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 22px;
+            padding: 2px;
+        }
+        // 날씨 p태그만 스타일 적용
+        ${DateContainer} p:first-child {
+            width: 22px;
+            border-radius: 50%;
+            color: white;
+            background-color: blue;
+
+            // 수정: 클릭한 날짜가 오늘 날짜와 같으면 빨간색 원으로 표시
+            ${props.sameDay && `
+                background-color: red;
+            `}
+        }
+    `}
+`;
+
+const DateHeader = styled.div`
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 30px;
+    padding-left: 3px;
+    padding-top: 2px;
+`;
+
+const DateContainer = styled.div<DateContainerProp>`
+    display: flex;
+    flex-direction: row;
+
+    p{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 22px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+
+        // 공휴일일때
+        &:first-child {
+            ${(props) =>
+                props.sameDay &&
+                css`
+                    width: 22px;
+                    padding: 2px;
+                    border-radius: 50%;
+                    color: white;
+                    background-color: #ff2e16;
+                `}
+        }
+        &:last-child {
+            ${(props) =>
+                props.sameDay &&
+                css`
+                    padding: 2px;
+                `}
+        }
+    }
+    
+`;
+
+const HolidayName = styled.div<HolidayNameProp>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-left: 8px;
+
+    ${({ isHoliday }) => isHoliday && 'color: #ff2e16;'}
 `;
 
 export default AllDay

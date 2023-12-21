@@ -49,6 +49,7 @@ interface Props {
     clickedDate: Date | undefined;
     setClickedDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
     holiday: Holiday[];
+    checkHoliday: boolean;
 }
 
 // 현재 날짜를 yyyymmdd 형식의 문자열로 변환하는 함수입니다. (padStart는 두자리수로 값을 채워줌)
@@ -59,7 +60,7 @@ const dateToyyyymmdd = (date:Date):string => {
     return `${year}${month}${day}`;
 }
 
-const DateBox = ({ nowDate, setNowDate, clickedDate, setClickedDate, holiday }: Props) => {
+const DateBox = ({ nowDate, setNowDate, clickedDate, setClickedDate, holiday, checkHoliday }: Props) => {
     // 현재 월의 전체 날짜 목록을 가져옴
     const allDay: Date[] = monthList(nowDate);
     
@@ -94,6 +95,7 @@ const DateBox = ({ nowDate, setNowDate, clickedDate, setClickedDate, holiday }: 
                         setClickedDate={setClickedDate}
                         isHoliday={isHoliday}
                         holiday={holiday}
+                        checkHoliday={checkHoliday}
                     />
                 );
             })}

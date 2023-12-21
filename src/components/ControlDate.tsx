@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 // Props 타입 지정
@@ -6,9 +6,17 @@ interface Props {
     // 현재 날짜
     nowDate: Date;
     setNowDate: React.Dispatch<React.SetStateAction<Date>>;
+    checkHoliday: boolean
+    setCheckHoliday: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ControlDate = ({ nowDate, setNowDate }: Props) => {
+const ControlDate = ({ nowDate, setNowDate, checkHoliday, setCheckHoliday }: Props) => {
+    // 공휴일 뷰 체크박스 함수
+    
+    const viewHollyday = () => {
+        setCheckHoliday(!checkHoliday);
+    }
+
     // 연도를 변경하는 함수 정의
     const changeYear = (change: number) => {
         const date = new Date(nowDate.getTime());
@@ -28,6 +36,11 @@ const ControlDate = ({ nowDate, setNowDate }: Props) => {
         <Container>
             {/* 현재 연도와 월을 표시하는 제목 */}
             <YearAndMonth><h1>{`${nowDate.getFullYear()}.${nowDate.getMonth() + 1}`}</h1></YearAndMonth>
+
+            {/* 공휴일 view 버튼 */}
+            <HolidayBtn>
+                <input onClick={viewHollyday} type='checkbox'></input>
+            </HolidayBtn>
 
             {/* 이전 연도, 이전 월 버튼 */}
             <BtnBox>
@@ -56,6 +69,10 @@ const Container = styled.div`
 `;
 
 const YearAndMonth = styled.div`
+`;
+
+const HolidayBtn = styled.div`
+    
 `;
 
 const BtnBox = styled.div`
