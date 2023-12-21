@@ -27,12 +27,18 @@ const monthList = (nowDate: Date) => {
     for (let i = 1; i <= nowMonthEnd; i++) {
         result.push(new Date(nowYear, nowMonth, i));
     } // 이번달 전체 날짜 배열에 추가
-    
-    for (let i = 1; i < 7 - dayLastWeek; i++) {
-        result.push(new Date(nowYear, nowMonth + 1, i));
-    } // 마지막 주에 포함될 다음달 날짜 계산해 배열에 추가
-    
 
+    // for (let i = 1; i < 7 - dayLastWeek; i++) {
+    //     result.push(new Date(nowYear, nowMonth + 1, i));
+    // } // 마지막 주에 포함될 다음달 날짜 계산해 배열에 추가
+
+    // 다음달 구해야 하는 날짜 수 계산 객체 ( 6주(42일)이 되도록 )
+    const remainingDays = 42 - result.length;
+
+    for (let i = 1; i <= remainingDays; i++) {
+        result.push(new Date(nowYear, nowMonth + 1, i));
+    } // 구해야 하는 다음달 날짜 개수만큼 배열에 날짜 추가
+    
     return result;
 }
 
