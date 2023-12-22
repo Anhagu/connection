@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Holiday } from '../types/type';
+import Modal from './modal';
 
 // AllDay 컴포넌트의 스타일을 지정하는 Container 스타일드 컴포넌트를 정의
 interface ContainerProps {
@@ -33,6 +34,7 @@ interface Props {
 
 // AllDay 컴포넌트 정의 (DateBox 컴포넌트에서 map함수에 의해 해당 달의 첫날부터 마지막 날까지 호출됨)
 const AllDay = ({ day, nowDate, setNowDate, clickedDate, setClickedDate, isHoliday, holiday, checkHoliday }: Props) => {
+    const [buttonPosition, setButtonPosition] = useState<DOMRect | null>(null);
     // 현재 시간
     const nowTime = new Date();
 
@@ -52,10 +54,11 @@ const AllDay = ({ day, nowDate, setNowDate, clickedDate, setClickedDate, isHolid
         clickedDate.getDate() === day.getDate()
         : false;
 
-    // 클릭된 날짜를 업데이트하는 함수
-    const clickDate = () => {
+    // 클릭한 칸의 날짜 및 클릭한 버튼 위치 업데이트
+    const clickDate = (e: React.MouseEvent<HTMLDivElement>) => {
         setClickedDate(day);
-    };
+        setButtonPosition(e.currentTarget.getBoundingClientRect());
+      };
 
     // 휴일의 날짜를 문자열로 변환하여 저장합니다.
     const holidayLocDate = holiday.map((data: Holiday) => {
@@ -87,6 +90,9 @@ const AllDay = ({ day, nowDate, setNowDate, clickedDate, setClickedDate, isHolid
                     <p>{isCurrentDateHoliday && ` ${holidayInfo?.dateName}`}</p>
                 </HolidayName>
             </DateHeader>
+            {clickDay && (
+        <Modal onClose={() => setClickedDate(undefined)} buttonPosition={buttonPosition} />
+      )}
         </Container>
     )
 }
