@@ -53,15 +53,29 @@ const Modal: React.FC<ModalProps> = ({ onClose, buttonPosition }) => {
     };
 
     return (
+        <ModalOverlay opacity={opacity} onClick={handleCancelClick}>
         <ModalContainer opacity={opacity} scale={scale} top={top} left={left} onClick={onClose}>
-            <ModalContent onClick={handleModalClick}>
+            <ModalContent>
                 <p>모달 내용입니다</p>
                 <StyledInput />
-                <CloseButton onClick={handleCancelClick}>취소</CloseButton>
+                {/* <CloseButton onClick={handleCancelClick}>취소</CloseButton> */}
             </ModalContent>
         </ModalContainer>
+        </ModalOverlay>
     );
 };
+
+const ModalOverlay = styled.div<{ opacity: number }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: ${(props) => props.opacity};
+  transition: opacity 0.5s;
+  z-index: 999;
+`;
 
 // 모달 스타일 정의
 const ModalContainer = styled.div<{ opacity: number; scale: number; top: number; left: number }>`

@@ -56,9 +56,11 @@ const AllDay = ({ day, nowDate, setNowDate, clickedDate, setClickedDate, isHolid
 
     // 클릭한 칸의 날짜 및 클릭한 버튼 위치 업데이트
     const clickDate = (e: React.MouseEvent<HTMLDivElement>) => {
-        setClickedDate(day);
-        setButtonPosition(e.currentTarget.getBoundingClientRect());
-      };
+        if (e.detail === 2) { // 더블 클릭 이벤트 확인
+            setClickedDate(day);
+            setButtonPosition(e.currentTarget.getBoundingClientRect());
+        }
+    };
 
     // 휴일의 날짜를 문자열로 변환하여 저장합니다.
     const holidayLocDate = holiday.map((data: Holiday) => {
@@ -91,8 +93,8 @@ const AllDay = ({ day, nowDate, setNowDate, clickedDate, setClickedDate, isHolid
                 </HolidayName>
             </DateHeader>
             {clickDay && (
-        <Modal onClose={() => setClickedDate(undefined)} buttonPosition={buttonPosition} />
-      )}
+                <Modal onClose={() => setClickedDate(undefined)} buttonPosition={buttonPosition} />
+            )}
         </Container>
     )
 }
@@ -167,8 +169,8 @@ const DateContainer = styled.div<DateContainerProp>`
         // 공휴일일때
         &:first-child {
             ${(props) =>
-                props.sameDay &&
-                css`
+        props.sameDay &&
+        css`
                     width: 22px;
                     padding: 2px;
                     border-radius: 50%;
@@ -178,8 +180,8 @@ const DateContainer = styled.div<DateContainerProp>`
         }
         &:last-child {
             ${(props) =>
-                props.sameDay &&
-                css`
+        props.sameDay &&
+        css`
                     padding: 2px;
                 `}
         }
